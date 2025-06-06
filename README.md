@@ -9,8 +9,6 @@
 
 Eine **state-of-the-art Flask-Webanwendung** zur KI-gestützten Erkennung von Falschinformationen mit **BERT-Integration**, **4-Sprachen-Support**, **Dark/Light Mode** und **transparenter Score-Erklärung**. Kombiniert traditionelle ML mit modernen Transformer-Modellen für höchste Genauigkeit.
 
-![MisInfoGuard Interface](https://via.placeholder.com/800x400/667eea/ffffff?text=MisInfoGuard+Enhanced+Interface)
-
 ## 📋 Überblick
 
 **MisInfoGuard Enhanced** ist die neueste Evolution unserer Falschinformations-Erkennungssoftware. Das System kombiniert bewährte Random Forest-Algorithmen mit modernen BERT-Transformern und bietet eine intuitive, mehrsprachige Benutzeroberfläche mit vollständiger Score-Transparenz.
