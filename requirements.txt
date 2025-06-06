@@ -1,0 +1,210 @@
+# ===================================================================
+# MisInfoGuard Enhanced - Production Requirements
+# Flask-based AI-powered misinformation detection with BERT integration
+# ===================================================================
+
+# Core Flask Dependencies
+Flask>=2.3.0,<3.0.0
+Flask-CORS>=4.0.0,<5.0.0
+
+# Data Science & Machine Learning
+pandas>=1.5.0,<2.1.0
+numpy>=1.24.0,<1.25.0
+scikit-learn>=1.3.0,<1.4.0
+joblib>=1.3.0,<1.4.0
+
+# Natural Language Processing
+nltk>=3.8.0,<3.9.0
+requests>=2.31.0,<3.0.0
+
+# BERT & Transformers (Enhanced AI)
+transformers>=4.30.0,<4.35.0
+torch>=2.0.0,<2.1.0
+tokenizers>=0.13.0,<0.14.0
+
+# Optional: GPU Acceleration (uncomment if CUDA available)
+# torch>=2.0.0+cu118 --find-links https://download.pytorch.org/whl/torch_stable.html
+# torchaudio>=2.0.0+cu118 --find-links https://download.pytorch.org/whl/torch_stable.html
+
+# Production Web Server
+gunicorn>=21.0.0,<22.0.0
+
+# Security & Performance
+Werkzeug>=2.3.0,<3.0.0
+MarkupSafe>=2.1.0,<3.0.0
+itsdangerous>=2.1.0,<3.0.0
+click>=8.1.0,<9.0.0
+
+# HTTP & Networking
+urllib3>=1.26.0,<2.0.0
+certifi>=2023.5.7
+charset-normalizer>=3.1.0,<4.0.0
+idna>=3.4,<4.0
+
+# Scientific Computing (Core Dependencies)
+scipy>=1.10.0,<1.12.0
+threadpoolctl>=3.1.0,<4.0.0
+
+# Text Processing & Regex
+regex>=2023.6.3,<2024.0.0
+
+# Hugging Face Ecosystem
+huggingface-hub>=0.15.0,<0.17.0
+safetensors>=0.3.0,<0.4.0
+
+# File I/O & Serialization
+PyYAML>=6.0,<7.0
+tqdm>=4.65.0,<5.0.0
+
+# Date & Time Utilities
+python-dateutil>=2.8.0,<3.0.0
+pytz>=2023.3
+
+# ===================================================================
+# Optional Development Dependencies
+# Uncomment for development environment
+# ===================================================================
+
+# Testing Framework
+# pytest>=7.4.0,<8.0.0
+# pytest-cov>=4.1.0,<5.0.0
+# pytest-flask>=1.2.0,<2.0.0
+
+# Code Quality & Formatting
+# black>=23.7.0,<24.0.0
+# flake8>=6.0.0,<7.0.0
+# isort>=5.12.0,<6.0.0
+# mypy>=1.5.0,<2.0.0
+
+# Documentation
+# Sphinx>=7.1.0,<8.0.0
+# sphinx-rtd-theme>=1.3.0,<2.0.0
+
+# Performance Profiling
+# memory-profiler>=0.61.0,<1.0.0
+# psutil>=5.9.0,<6.0.0
+
+# ===================================================================
+# Optional Production Monitoring
+# Uncomment for production monitoring
+# ===================================================================
+
+# Metrics & Monitoring
+# prometheus-client>=0.17.0,<1.0.0
+# structlog>=23.1.0,<24.0.0
+
+# Caching
+# redis>=4.6.0,<5.0.0
+# Flask-Caching>=2.1.0,<3.0.0
+
+# Rate Limiting
+# Flask-Limiter>=3.4.0,<4.0.0
+
+# Database (if needed)
+# SQLAlchemy>=2.0.0,<2.1.0
+# Flask-SQLAlchemy>=3.0.0,<4.0.0
+
+# ===================================================================
+# Platform-Specific Notes
+# ===================================================================
+
+# Windows Users:
+# If you encounter issues with torch installation on Windows, try:
+# pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# macOS Users (Apple Silicon):
+# For M1/M2 Macs, torch should automatically detect MPS acceleration
+# No special configuration needed
+
+# Linux Users:
+# For CUDA support, uncomment the GPU acceleration lines above
+# Ensure CUDA toolkit is installed: https://developer.nvidia.com/cuda-downloads
+
+# ===================================================================
+# Installation Instructions
+# ===================================================================
+
+# Basic Installation:
+# pip install -r requirements.txt
+
+# Development Installation:
+# pip install -r requirements.txt
+# # Uncomment development dependencies above and run again
+
+# Production Installation:
+# pip install --no-cache-dir -r requirements.txt
+
+# Docker Installation:
+# FROM python:3.9-slim
+# COPY requirements.txt .
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# ===================================================================
+# Version Compatibility Matrix
+# ===================================================================
+
+# Python: 3.8, 3.9, 3.10, 3.11 (Recommended: 3.9+)
+# Flask: 2.3.x (LTS)
+# scikit-learn: 1.3.x (Latest stable)
+# transformers: 4.30+ (BERT support)
+# torch: 2.0+ (Stable API)
+
+# ===================================================================
+# Approximate Package Sizes (for planning)
+# ===================================================================
+
+# Core ML packages: ~200MB
+# BERT/Transformers: ~500MB 
+# Torch (CPU): ~200MB
+# Torch (CUDA): ~2GB
+# Total (CPU): ~900MB
+# Total (GPU): ~2.7GB
+
+# ===================================================================
+# Security Considerations
+# ===================================================================
+
+# Regular updates recommended:
+# pip list --outdated
+# pip install --upgrade package_name
+
+# Security scan:
+# pip-audit (install separately: pip install pip-audit)
+# safety check (install separately: pip install safety)
+
+# ===================================================================
+# Performance Optimization Tips
+# ===================================================================
+
+# For faster startup (production):
+# Set TRANSFORMERS_OFFLINE=1 to prevent online model checks
+# Pre-download models during container build
+
+# For memory optimization:
+# Use torch.jit.script() for model optimization
+# Consider model quantization for mobile deployment
+
+# ===================================================================
+# Troubleshooting Common Issues
+# ===================================================================
+
+# Issue: ImportError for transformers
+# Solution: pip install --upgrade transformers torch
+
+# Issue: NLTK data not found
+# Solution: python -c "import nltk; nltk.download('vader_lexicon')"
+
+# Issue: Memory issues with BERT
+# Solution: Reduce batch size or use CPU-only torch
+
+# Issue: Slow startup
+# Solution: Use gunicorn with preload: gunicorn --preload
+
+# ===================================================================
+# Environment Variables (Optional)
+# ===================================================================
+
+# TRANSFORMERS_CACHE=/path/to/cache  # Custom model cache
+# TOKENIZERS_PARALLELISM=false       # Disable tokenizer warnings
+# OMP_NUM_THREADS=4                  # Limit CPU threads
+# CUDA_VISIBLE_DEVICES=0             # Select GPU device

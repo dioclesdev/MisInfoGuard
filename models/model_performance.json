@@ -1,0 +1,23 @@
+{
+  "train_accuracy": 1.0,
+  "test_accuracy": 1.0,
+  "cv_accuracy_mean": 1.0,
+  "cv_accuracy_std": 0.0,
+  "cv_precision_mean": 1.0,
+  "cv_precision_std": 0.0,
+  "cv_recall_mean": 1.0,
+  "cv_recall_std": 0.0,
+  "cv_f1_mean": 1.0,
+  "cv_f1_std": 0.0,
+  "oob_score": 1.0,
+  "training_samples": 3000,
+  "feature_count": 853,
+  "datasets_used": [
+    "FakeNewsNet",
+    "GossipCop",
+    "COVID-19"
+  ],
+  "trained_at": "2025-06-06T09:16:22.497651",
+  "model_type": "Enhanced Random Forest + TF-IDF",
+  "bert_available": true
+}

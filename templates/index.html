@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ get_text('title') }}</title>
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.95);
+            --bg-tertiary: #f8f9fa;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --border-color: #e0e6ed;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --accent: #667eea;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-secondary: rgba(30, 30, 50, 0.95);
+            --bg-tertiary: #2a2a3e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #404060;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --accent: #7b68ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px var(--shadow);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--text-primary) 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn, .theme-btn, .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lang-btn:hover, .theme-btn:hover, .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .lang-btn.active, .mode-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .analyze-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .bert-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: var(--border-color);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(25px);
+        }
+
+        .results-section {
+            background: var(--bg-tertiary);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .results-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .analysis-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .score-display {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.credible {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .score-circle.uncertain {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .score-circle.suspicious {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .classification {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .classification.credible { color: #27ae60; }
+        .classification.uncertain { color: #f39c12; }
+        .classification.suspicious { color: #e74c3c; }
+
+        .recommendation {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .confidence-display {
+            text-align: center;
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #f39c12 50%, #27ae60 100%);
+            transition: width 0.3s ease;
+        }
+
+        .model-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .model-result {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .model-result h4 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .model-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .risk-factors {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .risk-factors h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .risk-list {
+            list-style: none;
+        }
+
+        .risk-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            color: #e74c3c;
+        }
+
+        .risk-list li:last-child {
+            border-bottom: none;
+        }
+
+        .risk-list li::before {
+            content: "⚠️";
+            margin-right: 10px;
+        }
+
+        .no-risks {
+            color: #27ae60;
+            font-style: italic;
+        }
+
+        .no-risks::before {
+            content: "✅";
+            margin-right: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .example-texts {
+            margin-top: 20px;
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .example-texts h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .example-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .example-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .processing-info {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #856404;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .disclaimer {
+            background: rgba(255, 243, 205, 0.1);
+            border-color: rgba(255, 234, 167, 0.3);
+            color: #ffd700;
+        }
+
+        .advanced-controls {
+            display: none;
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .advanced-controls.show {
+            display: block;
+        }
+
+        .advanced-controls h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .explain-score-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .explain-score-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .score-explanation {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .score-explanation h4 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .explanation-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .method-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .method-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .method-icon {
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .method-details {
+            flex: 1;
+        }
+
+        .method-details strong {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .method-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: var(--accent);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .scoring-formula {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .scoring-formula h5 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .formula-display {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .formula-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .formula-details {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .weight-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .weight-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .weight-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .interpretation-guide {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .interpretation-guide h5 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .score-ranges {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .score-range {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .score-range.credible {
+            background: rgba(39, 174, 96, 0.1);
+            border-left-color: #27ae60;
+        }
+
+        .score-range.uncertain {
+            background: rgba(243, 156, 18, 0.1);
+            border-left-color: #f39c12;
+        }
+
+        .score-range.suspicious {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: #e74c3c;
+        }
+
+        .range-percent {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .range-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .toggle-explanation {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 10px;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-explanation:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .method-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .method-icon {
+                min-width: auto;
+            }
+
+            .formula-details {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .score-ranges {
+                gap: 8px;
+            }
+
+            .score-range {
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+        }
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header-controls {
+                position: static;
+                justify-content: center;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+
+            .analyze-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .model-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-controls {
+                gap: 8px;
+            }
+            
+            .lang-btn, .theme-btn, .mode-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="container">
+        <div class="header">
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <a href="/set_language/de" class="lang-btn {% if lang == 'de' %}active{% endif %}">🇩🇪 DE</a>
+                    <a href="/set_language/en" class="lang-btn {% if lang == 'en' %}active{% endif %}">🇺🇸 EN</a>
+                    <a href="/set_language/fr" class="lang-btn {% if lang == 'fr' %}active{% endif %}">🇫🇷 FR</a>
+                    <a href="/set_language/es" class="lang-btn {% if lang == 'es' %}active{% endif %}">🇪🇸 ES</a>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+                <button class="mode-btn" onclick="toggleAdvancedMode()">⚙️</button>
+            </div>
+            <h1>🔍 MisInfoGuard</h1>
+            <p>{{ get_text('subtitle') }}</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="textInput">{{ get_text('analyze_text') }}</label>
+                    <textarea 
+                        id="textInput" 
+                        placeholder="{{ get_text('placeholder') }}"
+                        maxlength="5000"
+                    ></textarea>
+                </div>
+                
+                <div class="analyze-controls">
+                    <button id="analyzeBtn" class="analyze-btn">
+                        📊 {{ get_text('analyze_btn') }}
+                    </button>
+                    
+                    <div class="bert-toggle">
+                        <span>{{ get_text('bert_analysis') }}</span>
+                        <div class="toggle-switch active" id="bertToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advanced-controls" id="advancedControls">
+                    <h3>{{ get_text('advanced_mode') }}</h3>
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="detailedAnalysis" checked> 
+                            {{ get_text('model_comparison') }}
+                        </label>
+                    </div>
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="showProcessingTime" checked> 
+                            {{ get_text('processing_time') }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="example-texts">
+                    <h3>{{ get_text('examples_title') }}</h3>
+                    <button class="example-btn" onclick="loadExample('credible')">
+                        {{ get_text('credible_example') }}
+                    </button>
+                    <button class="example-btn" onclick="loadExample('suspicious')">
+                        {{ get_text('suspicious_example') }}
+                    </button>
+                    <button class="example-btn" onclick="loadExample('mixed')">
+                        {{ get_text('mixed_example') }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="results-header">
+                    <h2>📈 {{ get_text('results_title') }}</h2>
+                    <div class="analysis-info" id="analysisInfo" style="display: none;">
+                        <span id="analysisType">{{ get_text('traditional_analysis') }}</span>
+                    </div>
+                </div>
+
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>{{ get_text('loading') }}</p>
+                </div>
+
+                <div id="results" style="display: none;">
+                    <div class="score-display">
+                        <div id="scoreCircle" class="score-circle">
+                            <span id="scoreText">--%</span>
+                        </div>
+                        <div id="classification" class="classification">{{ get_text('no_analysis') }}</div>
+                        <div id="recommendation" class="recommendation">{{ get_text('enter_text') }}</div>
+                        
+                        <div class="confidence-display">
+                            <div class="detail-label">{{ get_text('confidence') }}</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                            </div>
+                            <div id="confidenceText">--</div>
+                        </div>
+                        
+                        <button class="explain-score-btn" onclick="toggleScoreExplanation()">
+                            🔍 {{ get_text('explain_score') }}
+                        </button>
+                    </div>
+
+                    <div id="modelComparison" class="model-comparison" style="display: none;">
+                        <div class="model-result">
+                            <h4>🔍 {{ get_text('traditional_analysis') }}</h4>
+                            <div class="model-score" id="rfScore">--%</div>
+                            <div class="detail-label">Random Forest + TF-IDF</div>
+                        </div>
+                        <div class="model-result" id="bertResult" style="display: none;">
+                            <h4>🤖 {{ get_text('bert_analysis') }}</h4>
+                            <div class="model-score" id="bertScore">--%</div>
+                            <div class="detail-label">BERT Transformer</div>
+                        </div>
+                    </div>
+
+                    <div class="risk-factors">
+                        <h3>🚨 {{ get_text('risk_factors') }}</h3>
+                        <ul id="riskList" class="risk-list">
+                            <li class="no-risks">{{ get_text('no_risks') }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">{{ get_text('words') }}</div>
+                            <div id="wordCount" class="detail-value">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">{{ get_text('sentences') }}</div>
+                            <div id="sentenceCount" class="detail-value">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">{{ get_text('superlatives') }}</div>
+                            <div id="superlatives" class="detail-value">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">{{ get_text('exclamations') }}</div>
+                            <div id="exclamations" class="detail-value">-</div>
+                        </div>
+                    </div>
+
+                    <div class="processing-info" id="processingInfo" style="display: none;">
+                        <span>{{ get_text('processing_time') }}: <span id="processingTime">-- ms</span></span>
+                        <span id="analysisTimestamp">--</span>
+                    </div>
+
+                    <div class="score-explanation" id="scoreExplanation" style="display: none;">
+                        <h4>🔍 {{ get_text('how_score_calculated') }}</h4>
+                        <div class="explanation-content">
+                            <div class="method-breakdown">
+                                <div class="method-item">
+                                    <div class="method-icon">🔍</div>
+                                    <div class="method-details">
+                                        <strong>{{ get_text('traditional_analysis') }}</strong>
+                                        <p>{{ get_text('traditional_explanation') }}</p>
+                                        <div class="feature-list">
+                                            <span class="feature-tag">TF-IDF</span>
+                                            <span class="feature-tag">{{ get_text('linguistic_features') }}</span>
+                                            <span class="feature-tag">{{ get_text('sentiment') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="method-item" id="bertExplanation" style="display: none;">
+                                    <div class="method-icon">🤖</div>
+                                    <div class="method-details">
+                                        <strong>{{ get_text('bert_analysis') }}</strong>
+                                        <p>{{ get_text('bert_explanation') }}</p>
+                                        <div class="feature-list">
+                                            <span class="feature-tag">Transformer</span>
+                                            <span class="feature-tag">{{ get_text('deep_learning') }}</span>
+                                            <span class="feature-tag">{{ get_text('context_understanding') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scoring-formula" id="scoringFormula">
+                                <h5>📊 {{ get_text('final_score') }}</h5>
+                                <div class="formula-display">
+                                    <span class="formula-text" id="formulaText">
+                                        {{ get_text('score_formula_simple') }}
+                                    </span>
+                                </div>
+                                <div class="formula-details">
+                                    <div class="weight-item">
+                                        <span class="weight-label">{{ get_text('traditional_weight') }}:</span>
+                                        <span class="weight-value">60%</span>
+                                    </div>
+                                    <div class="weight-item" id="bertWeight" style="display: none;">
+                                        <span class="weight-label">{{ get_text('bert_weight') }}:</span>
+                                        <span class="weight-value">40%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="interpretation-guide">
+                                <h5>📈 {{ get_text('score_interpretation') }}</h5>
+                                <div class="score-ranges">
+                                    <div class="score-range credible">
+                                        <span class="range-percent">70-100%</span>
+                                        <span class="range-label">{{ get_text('classification_credible') }}</span>
+                                    </div>
+                                    <div class="score-range uncertain">
+                                        <span class="range-percent">40-69%</span>
+                                        <span class="range-label">{{ get_text('classification_uncertain') }}</span>
+                                    </div>
+                                    <div class="score-range suspicious">
+                                        <span class="range-percent">0-39%</span>
+                                        <span class="range-label">{{ get_text('classification_suspicious') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="toggle-explanation" onclick="toggleScoreExplanation()">
+                            <span id="toggleText">{{ get_text('hide_explanation') }}</span> ▲
+                        </button>
+                    </div>
+
+                    <div class="disclaimer">
+                        {{ get_text('disclaimer') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Erweiterte Lokalisierung für JavaScript
+        const TRANSLATIONS = {
+            {% if lang == 'de' %}
+            very_negative: "Sehr negative emotionale Sprache",
+            overly_positive: "Übertrieben positive Sprache", 
+            excessive_superlatives: "Häufige Verwendung von Superlativen",
+            excessive_caps: "Übermäßige Großschreibung",
+            caps_words: "Viele Wörter in Großbuchstaben",
+            repeated_punctuation: "Wiederholte Satzzeichen",
+            conspiracy_language: "Verschwörungstheoretische Begriffe",
+            urgency_manipulation: "Manipulative Dringlichkeits-Sprache",
+            emotional_manipulation: "Emotionale Manipulation",
+            no_evidence: "Keine wissenschaftlichen Begriffe oder Belege",
+            no_sources: "Keine Quellenangaben",
+            poor_readability: "Schlechte Lesbarkeit",
+            credible: "{{ get_text('classification_credible') }}",
+            suspicious: "{{ get_text('classification_suspicious') }}",
+            uncertain: "{{ get_text('classification_uncertain') }}",
+            recommendation_credible: "{{ get_text('recommendation_credible') }}",
+            recommendation_suspicious: "{{ get_text('recommendation_suspicious') }}",
+            recommendation_uncertain: "{{ get_text('recommendation_uncertain') }}"
+            {% elif lang == 'en' %}
+            very_negative: "Very negative emotional language",
+            overly_positive: "Overly positive language",
+            excessive_superlatives: "Frequent use of superlatives", 
+            excessive_caps: "Excessive capitalization",
+            caps_words: "Many words in capital letters",
+            repeated_punctuation: "Repeated punctuation marks",
+            conspiracy_language: "Conspiracy theory language",
+            urgency_manipulation: "Manipulative urgency language",
+            emotional_manipulation: "Emotional manipulation",
+            no_evidence: "No scientific terms or evidence",
+            no_sources: "No source citations",
+            poor_readability: "Poor readability",
+            credible: "{{ get_text('classification_credible') }}",
+            suspicious: "{{ get_text('classification_suspicious') }}",
+            uncertain: "{{ get_text('classification_uncertain') }}",
+            recommendation_credible: "{{ get_text('recommendation_credible') }}",
+            recommendation_suspicious: "{{ get_text('recommendation_suspicious') }}",
+            recommendation_uncertain: "{{ get_text('recommendation_uncertain') }}"
+            {% elif lang == 'fr' %}
+            very_negative: "Langage émotionnel très négatif",
+            overly_positive: "Langage excessivement positif",
+            excessive_superlatives: "Utilisation fréquente de superlatifs",
+            excessive_caps: "Majuscules excessives",
+            caps_words: "Beaucoup de mots en majuscules",
+            repeated_punctuation: "Ponctuation répétée",
+            conspiracy_language: "Langage de théorie du complot",
+            urgency_manipulation: "Langage d'urgence manipulateur",
+            emotional_manipulation: "Manipulation émotionnelle",
+            no_evidence: "Aucun terme scientifique ou preuve",
+            no_sources: "Aucune citation de source",
+            poor_readability: "Mauvaise lisibilité",
+            credible: "{{ get_text('classification_credible') }}",
+            suspicious: "{{ get_text('classification_suspicious') }}",
+            uncertain: "{{ get_text('classification_uncertain') }}",
+            recommendation_credible: "{{ get_text('recommendation_credible') }}",
+            recommendation_suspicious: "{{ get_text('recommendation_suspicious') }}",
+            recommendation_uncertain: "{{ get_text('recommendation_uncertain') }}"
+            {% else %}
+            very_negative: "Lenguaje emocional muy negativo",
+            overly_positive: "Lenguaje excesivamente positivo",
+            excessive_superlatives: "Uso frecuente de superlativos",
+            excessive_caps: "Mayúsculas excesivas",
+            caps_words: "Muchas palabras en mayúsculas",
+            repeated_punctuation: "Puntuación repetida",
+            conspiracy_language: "Lenguaje de teoría conspiratoria",
+            urgency_manipulation: "Lenguaje manipulador de urgencia",
+            emotional_manipulation: "Manipulación emocional",
+            no_evidence: "Sin términos científicos o evidencia",
+            no_sources: "Sin citas de fuentes",
+            poor_readability: "Mala legibilidad",
+            credible: "{{ get_text('classification_credible') }}",
+            suspicious: "{{ get_text('classification_suspicious') }}",
+            uncertain: "{{ get_text('classification_uncertain') }}",
+            recommendation_credible: "{{ get_text('recommendation_credible') }}",
+            recommendation_suspicious: "{{ get_text('recommendation_suspicious') }}",
+            recommendation_uncertain: "{{ get_text('recommendation_uncertain') }}"
+            {% endif %}
+        };
+
+        // DOM Elemente
+        const textInput = document.getElementById('textInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const scoreCircle = document.getElementById('scoreCircle');
+        const scoreText = document.getElementById('scoreText');
+        const classification = document.getElementById('classification');
+        const recommendation = document.getElementById('recommendation');
+        const riskList = document.getElementById('riskList');
+        const bertToggle = document.getElementById('bertToggle');
+        const advancedControls = document.getElementById('advancedControls');
+
+        // State
+        let useBert = true;
+        let advancedMode = false;
+        let darkMode = false;
+
+        // Event Listeners
+        analyzeBtn.addEventListener('click', analyzeText);
+        textInput.addEventListener('input', function() {
+            analyzeBtn.disabled = this.value.length === 0;
+        });
+
+        bertToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            useBert = this.classList.contains('active');
+        });
+
+        // Theme and Mode Controls
+        function toggleTheme() {
+            darkMode = !darkMode;
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            
+            const themeBtn = document.querySelector('.theme-btn');
+            themeBtn.textContent = darkMode ? '☀️' : '🌙';
+            
+            // Save preference
+            localStorage.setItem('darkMode', darkMode);
+        }
+
+        function toggleAdvancedMode() {
+            advancedMode = !advancedMode;
+            advancedControls.classList.toggle('show', advancedMode);
+            
+            const modeBtn = document.querySelector('.mode-btn');
+            modeBtn.classList.toggle('active', advancedMode);
+        }
+
+        // Load saved preferences
+        function loadPreferences() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (savedDarkMode) {
+                darkMode = true;
+                document.body.setAttribute('data-theme', 'dark');
+                document.querySelector('.theme-btn').textContent = '☀️';
+            }
+        }
+
+        // Beispiel-Texte laden
+        async function loadExample(type) {
+            try {
+                const response = await fetch(`/api/example/${type}`);
+                const data = await response.json();
+                
+                if (data.text) {
+                    textInput.value = data.text;
+                    analyzeBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Fehler beim Laden des Beispiel-Texts:', error);
+            }
+        }
+
+        async function analyzeText() {
+            const text = textInput.value.trim();
+            
+            if (text.length < 5) {
+                alert('{% if lang == "de" %}Text ist zu kurz. Mindestens 5 Zeichen erforderlich.{% elif lang == "fr" %}Le texte est trop court. Au moins 5 caractères requis.{% elif lang == "es" %}El texto es demasiado corto. Se requieren al menos 5 caracteres.{% else %}Text is too short. At least 5 characters required.{% endif %}');
+                return;
+            }
+
+            // UI States
+            analyzeBtn.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+
+            const startTime = Date.now();
+
+            try {
+                const detailedAnalysis = document.getElementById('detailedAnalysis').checked;
+                
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        text: text,
+                        use_bert: useBert,
+                        detailed: detailedAnalysis
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                const processingTime = Date.now() - startTime;
+                displayEnhancedResults(result, processingTime);
+
+            } catch (error) {
+                console.error('Analyse-Fehler:', error);
+                alert(`{% if lang == "de" %}Fehler bei der Analyse:{% elif lang == "fr" %}Erreur lors de l'analyse:{% elif lang == "es" %}Error en el análisis:{% else %}Analysis error:{% endif %} ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function displayEnhancedResults(result, clientProcessingTime) {
+            // Hauptscore
+            const score = Math.round(result.credibility_score * 100);
+            scoreText.textContent = `${score}%`;
+            
+            // CSS Klassen basierend auf Classification
+            scoreCircle.className = 'score-circle';
+            classification.className = 'classification';
+            
+            const classType = result.classification;
+            if (classType === 'credible') {
+                scoreCircle.classList.add('credible');
+                classification.classList.add('credible');
+            } else if (classType === 'uncertain') {
+                scoreCircle.classList.add('uncertain');
+                classification.classList.add('uncertain');
+            } else {
+                scoreCircle.classList.add('suspicious');
+                classification.classList.add('suspicious');
+            }
+
+            // Texte
+            classification.textContent = TRANSLATIONS[classType] || classType;
+            recommendation.textContent = TRANSLATIONS[`recommendation_${classType}`] || '';
+
+            // Confidence
+            const confidencePercent = Math.round(result.confidence * 100);
+            document.getElementById('confidenceFill').style.width = `${confidencePercent}%`;
+            document.getElementById('confidenceText').textContent = `${confidencePercent}%`;
+
+            // Modell-Vergleich
+            const detailedAnalysis = document.getElementById('detailedAnalysis').checked;
+            if (detailedAnalysis && result.detailed_analysis) {
+                document.getElementById('modelComparison').style.display = 'grid';
+                
+                // Traditional Analysis
+                const rfScore = Math.round(result.detailed_analysis.traditional_analysis.credibility_score * 100);
+                document.getElementById('rfScore').textContent = `${rfScore}%`;
+                
+                // BERT Analysis
+                if (result.detailed_analysis.bert_analysis && result.bert_available) {
+                    document.getElementById('bertResult').style.display = 'block';
+                    const bertScore = Math.round(result.detailed_analysis.bert_analysis.credibility_score * 100);
+                    document.getElementById('bertScore').textContent = `${bertScore}%`;
+                }
+            } else {
+                document.getElementById('modelComparison').style.display = 'none';
+            }
+
+            // Analyse-Info
+            document.getElementById('analysisInfo').style.display = 'flex';
+            const analysisType = result.bert_available && useBert ? 'BERT + RF' : 'Traditional RF';
+            document.getElementById('analysisType').textContent = analysisType;
+
+            // Risikofaktoren
+            displayRiskFactors(result.risk_factors || []);
+
+            // Details
+            displayDetails(result.text_features || {});
+
+            // Verarbeitungszeit
+            const showProcessingTime = document.getElementById('showProcessingTime').checked;
+            if (showProcessingTime) {
+                document.getElementById('processingInfo').style.display = 'flex';
+                const serverTime = result.processing_time_seconds ? Math.round(result.processing_time_seconds * 1000) : 0;
+                document.getElementById('processingTime').textContent = `Server: ${serverTime}ms, Client: ${clientProcessingTime}ms`;
+                
+                const timestamp = new Date(result.analysis_timestamp).toLocaleString();
+                document.getElementById('analysisTimestamp').textContent = timestamp;
+            } else {
+                document.getElementById('processingInfo').style.display = 'none';
+            }
+
+            // Ergebnisse anzeigen
+            results.style.display = 'block';
+        }
+
+        function displayRiskFactors(riskFactors) {
+            riskList.innerHTML = '';
+            
+            if (riskFactors.length === 0) {
+                const li = document.createElement('li');
+                li.className = 'no-risks';
+                li.textContent = '{{ get_text("no_risks") }}';
+                riskList.appendChild(li);
+            } else {
+                riskFactors.forEach(factor => {
+                    const li = document.createElement('li');
+                    li.textContent = TRANSLATIONS[factor] || factor;
+                    riskList.appendChild(li);
+                });
+            }
+        }
+
+        function displayDetails(features) {
+            document.getElementById('wordCount').textContent = features.word_count || '-';
+            document.getElementById('sentenceCount').textContent = features.sentence_count || '-';
+            document.getElementById('superlatives').textContent = features.superlatives || '-';
+            document.getElementById('exclamations').textContent = features.exclamation_marks || '-';
+        }
+
+        // Score-Erklärung Toggle
+        let scoreExplanationVisible = false;
+
+        function toggleScoreExplanation() {
+            const explanationDiv = document.getElementById('scoreExplanation');
+            const toggleText = document.getElementById('toggleText');
+            const toggleBtn = document.querySelector('.toggle-explanation');
+            
+            scoreExplanationVisible = !scoreExplanationVisible;
+            
+            if (scoreExplanationVisible) {
+                explanationDiv.style.display = 'block';
+                if (toggleText) {
+                    toggleText.textContent = '{{ get_text("hide_explanation") }}';
+                    toggleBtn.innerHTML = toggleText.textContent + ' ▲';
+                }
+                
+                // Update BERT explanation visibility
+                const bertExplanation = document.getElementById('bertExplanation');
+                const bertWeight = document.getElementById('bertWeight');
+                const formulaText = document.getElementById('formulaText');
+                
+                if (useBert && bertExplanation && bertWeight && formulaText) {
+                    bertExplanation.style.display = 'flex';
+                    bertWeight.style.display = 'flex';
+                    formulaText.textContent = '{{ get_text("score_formula_combined") }}';
+                } else if (formulaText) {
+                    formulaText.textContent = '{{ get_text("score_formula_simple") }}';
+                }
+            } else {
+                explanationDiv.style.display = 'none';
+                if (toggleText) {
+                    toggleText.textContent = '{{ get_text("show_explanation") }}';
+                    toggleBtn.innerHTML = toggleText.textContent + ' ▼';
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            analyzeBtn.disabled = true;
+            loadPreferences();
+        });
+    </script>
+</body>
+</html>
