@@ -646,26 +646,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 - **Fact-Checking Organizations** worldwide for their important work
 - **Open Data Providers** making research datasets publicly available
 
-## 📞 Support & Kontakt
-
-### **Community Support**
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/misinfo-guard-enhanced/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/misinfo-guard-enhanced/discussions)
-- 📖 **Documentation**: [Project Wiki](https://github.com/your-username/misinfo-guard-enhanced/wiki)
-- 🚀 **Feature Requests**: [Enhancement Issues](https://github.com/your-username/misinfo-guard-enhanced/issues/new?template=feature_request.md)
-
-### **Professional Support**
-- 📧 **General Support**: support@misinfo-guard.com
-- 🏢 **Enterprise Solutions**: enterprise@misinfo-guard.com
-- 🎓 **Academic Partnerships**: research@misinfo-guard.com
-- 🌐 **Project Website**: https://misinfo-guard.com
-
-### **Social Media & Updates**
-- 🐦 **Twitter**: [@MisInfoGuard](https://twitter.com/MisInfoGuard)
-- 💼 **LinkedIn**: [MisInfoGuard](https://linkedin.com/company/misinfo-guard)
-- 📺 **YouTube**: [Demo Videos & Tutorials](https://youtube.com/c/MisInfoGuard)
-- 📱 **Discord**: [Community Chat](https://discord.gg/misinfo-guard)
-
 ---
 
 ## 📈 Roadmap & Future Development
